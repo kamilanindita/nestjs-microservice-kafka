@@ -13,8 +13,9 @@ Architecture with Kafka transport in this project
 - node:16-alpine3.16 (image)
 - nestjs
 - @nestjs/microservices
+- kafkajs
 - zookeeper (confluentinc/cp-zookeeper image)
-- kafkajs (confluentinc/cp-kafka image)
+- kafka (confluentinc/cp-kafka image)
 - kafka-ui (provectuslabs/kafka-ui image)
 
 ## Features/Modules/Services
