@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+    api_gateway:
+        container_name: api_gateway
+        image: api-gateway:1.0.0
+        build:
+            context: ./api-gateway
+            target: production
+            dockerfile: ./Dockerfile
+        command: npm run start:prod
+        depends_on:
+            - kafka
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        ports:
+            - 3000:3000
+        env_file: .env
+
+    customer_service:
+        container_name: api_customer_service
+        image: api-customer-services:1.0.0
+        build:
+            context: ./customer-service
+            target: production
+            dockerfile: ./Dockerfile
+        command: npm run start:prod
+        depends_on:
+            - kafka
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        env_file: .env
+
+    book_service:
+        container_name: api_book_service
+        image: api-book-services:1.0.0
+        build:
+            context: ./book-service
+            target: production
+            dockerfile: ./Dockerfile
+        command: npm run start:prod
+        depends_on:
+            - kafka
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        env_file: .env
+
+    zookeeper:
+        container_name: zookeeper_service
+        image: confluentinc/cp-zookeeper:latest
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        env_file: .env
+
+    kafka:
+        container_name: kafka_service
+        image: confluentinc/cp-kafka:latest
+        depends_on:
+            - zookeeper
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        env_file: .env
+
+    kafka_ui:
+        container_name: kafka_ui
+        image: provectuslabs/kafka-ui:latest
+        depends_on:
+            - kafka
+        ports:
+            - 8080:8080
+        networks:
+            - nestjs-microservice-tcp
+        restart: unless-stopped
+        env_file: .env
+
+networks:
+    nestjs-microservice-tcp:
